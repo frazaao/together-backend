@@ -6,7 +6,7 @@ use App\Models\Perfil;
 use App\Models\Usuario;
 use Illuminate\Validation\Rule;
 
-class UsuarioStoreRequest extends BaseRequest
+class UsuarioUpdateRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,12 +26,12 @@ class UsuarioStoreRequest extends BaseRequest
     public function rules()
     {
         return [
-            Usuario::NOME => "required|min:5",
-            Usuario::EMAIL => "required",
-            Usuario::TELEFONE => "required|min:10|max:11",
-            Usuario::SENHA => "required|min:8",
+            Usuario::NOME => "nullable|min:5",
+            Usuario::EMAIL => "nullable",
+            Usuario::TELEFONE => "nullable|min:10|max:11",
+            Usuario::SENHA => "nullable|min:8",
             Usuario::ID_PERFIL => [
-                "required",
+                "nullable",
                 Rule::exists(Perfil::class, Perfil::ID)
             ]
         ];
@@ -40,15 +40,10 @@ class UsuarioStoreRequest extends BaseRequest
     public function messages(): array
     {
         return [
-            Usuario::NOME . ".required" => "O atributo nome é obrigatório",
             Usuario::NOME . ".min" => "O atributo nome precisa ter no mínimo 5 caracteres",
-            Usuario::EMAIL . ".required" => "O atributo email é obrigatório",
-            Usuario::TELEFONE . ".required" => "O atributo telefone é obrigatório",
             Usuario::TELEFONE . ".min" => "O atributo telefone deve conter no mínimo 10 dígitos",
             Usuario::TELEFONE . ".max" => "O atributo telefone deve conter no máximo 11 dígitos",
-            Usuario::SENHA . ".required" => "O atributo senha é obrigatório",
             Usuario::SENHA . ".min" => "A senha deve conter no mínimo 8 caracteres",
-            Usuario::ID_PERFIL . ".required" => "O atributo id_perfil é obrigatório",
             Usuario::ID_PERFIL . ".exists" => "O atributo id_perfil deve ser um valor válido"
         ];
     }

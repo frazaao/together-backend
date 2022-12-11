@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\SistemaExeption;
 use App\Http\Requests\UsuarioStoreRequest;
+use App\Http\Requests\UsuarioUpdateRequest;
 use App\Models\Perfil;
 use App\Models\Usuario;
-use Error;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class UsuarioController extends Controller
 {
-    protected $usuario;
+    private Usuario $usuario;
+    private Perfil $perfil;
 
     public function __construct(Usuario $usuario, Perfil $perfil)
     {
@@ -26,7 +28,7 @@ class UsuarioController extends Controller
      */
     public function index()
     {
-        $usuarios = $this->usuario->with('perfil', 'perfil.regra')->get();
+        $usuarios = $this->usuario->with('perfil', 'perfil.regra', 'aluno')->get();
         return response()->json($usuarios);
     }
 
@@ -38,7 +40,6 @@ class UsuarioController extends Controller
      */
     public function store(UsuarioStoreRequest $request)
     {
-        dd($request->validated());
         $perfil = $this->perfil->findOrFail($request->id_perfil);
 
         $usuario = $perfil->usuario()->create([
@@ -62,6 +63,12 @@ class UsuarioController extends Controller
     public function show($id)
     {
         $usuario = $this->usuario->with('perfil', 'perfil.regra')->find($id);
+        if (!$usuario) {
+            throw new SistemaExeption(
+                "Usuário não encontrado",
+                Response::HTTP_NOT_FOUND
+            );
+        }
         return response()->json($usuario);
     }
 
@@ -72,11 +79,14 @@ class UsuarioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UsuarioUpdateRequest $request, $id)
     {
         $usuario = $this->usuario->find($id);
         if (!$usuario) {
-            throw new Error('Usuário não encontrado', Response::HTTP_NOT_FOUND);
+            throw new SistemaExeption(
+                "Usuário não encontrado",
+                Response::HTTP_NOT_FOUND
+            );
         }
         $usuario->update($request->all());
         return response()->json($usuario);
@@ -90,6 +100,15 @@ class UsuarioController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $usuario = $this->usuario->find($id);
+        if (!$usuario) {
+            throw new SistemaExeption(
+                "Usuário não encontrado",
+                Response::HTTP_NOT_FOUND
+            );
+        }
+
+        $usuario->delete();
+        return response()->json();
     }
 }

@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\AlunoController;
+use App\Http\Controllers\PresencaController;
 use App\Http\Controllers\UsuarioController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,8 +16,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
 Route::apiResource('/usuario', UsuarioController::class);
+Route::apiResource('/aluno', AlunoController::class);
+Route::apiResource('/presenca', PresencaController::class);
+Route::get('/presenca/aluno/{idAluno}', [PresencaController::class, 'showByIdAluno']);

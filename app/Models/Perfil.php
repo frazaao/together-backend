@@ -32,6 +32,10 @@ class Perfil extends Model
 
     public function usuario()
     {
-        return $this->hasMany(Usuario::class, Usuario::ID_PERFIL, Perfil::ID);
+        return $this->hasMany(
+            Usuario::class,
+            Usuario::ID_PERFIL,
+            Perfil::ID
+        );
     }
 }

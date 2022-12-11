@@ -58,6 +58,19 @@ class Usuario extends Authenticatable
 
     public function perfil()
     {
-        return $this->belongsTo(Perfil::class, Usuario::ID_PERFIL, Perfil::ID);
+        return $this->belongsTo(
+            Perfil::class,
+            Usuario::ID_PERFIL,
+            Perfil::ID
+        );
+    }
+
+    public function aluno()
+    {
+        return $this->hasMany(
+            Aluno::class,
+            Aluno::ID_USUARIO_RESPONSAVEL,
+            Usuario::ID
+        );
     }
 }
