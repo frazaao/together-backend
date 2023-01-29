@@ -4,6 +4,7 @@ use Domain\Aluno\Controllers\AlunoController;
 use Domain\Auth\Controllers\AuthController;
 use Domain\Comentario\Controllers\ComentarioController;
 use Domain\Disciplina\Controllers\DisciplinaController;
+use Domain\Nota\Controllers\NotaController;
 use Domain\Presenca\Controllers\PresencaController;
 use Domain\Turma\Controllers\TurmaController;
 use Domain\Usuario\Controllers\UsuarioController;
@@ -45,6 +46,8 @@ Route::get('/comentario/aluno', [ComentarioController::class, 'listarComentarios
 Route::get('/comentario/aluno/meu', [ComentarioController::class, 'listarComentariosPorProfessorLogado'])->middleware(AUTH);
 Route::apiResource('/comentario', ComentarioController::class)->middleware(AUTH);
 Route::get('/comentario/aluno/{idAluno}', [ComentarioController::class, 'listarComentariosPorIdAluno'])->middleware(AUTH);
+
+Route::get('/nota/aluno/{idAluno}', [NotaController::class, 'listarNotasPorIdAluno']);
 
 Route::apiResource('/turma', TurmaController::class);
 

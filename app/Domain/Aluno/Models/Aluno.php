@@ -2,6 +2,7 @@
 
 namespace Domain\Aluno\Models;
 
+use Domain\Nota\Models\Nota;
 use Domain\Presenca\Models\Presenca;
 use Domain\Turma\Models\Turma;
 use Domain\TurmaAluno\Models\TurmaAluno;
@@ -49,6 +50,15 @@ class Aluno extends Model
             TurmaAluno::class,
             TurmaAluno::ID_ALUNO,
             TurmaAluno::ID_TURMA
+        );
+    }
+
+    public function nota()
+    {
+        return $this->hasMany(
+            Nota::class,
+            Nota::ID_ALUNO,
+            Aluno::ID
         );
     }
 }

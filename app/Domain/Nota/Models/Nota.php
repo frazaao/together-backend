@@ -31,7 +31,7 @@ class Nota extends Model
 
     public function aluno()
     {
-        return $this->hasMany(
+        return $this->HasOne(
             Aluno::class,
             Aluno::ID,
             Nota::ID_ALUNO
@@ -40,7 +40,7 @@ class Nota extends Model
 
     public function disciplina()
     {
-        return $this->hasMany(
+        return $this->hasOne(
             Disciplina::class,
             Disciplina::ID,
             Nota::ID_DISCIPLINA
