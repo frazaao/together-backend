@@ -4,12 +4,19 @@ namespace Domain\Auth\Controllers;
 
 use App\Exceptions\SistemaExeption;
 use App\Policies\Policy;
+use Domain\Usuario\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Policy
 {
+    private Usuario $usuario;
+
+    public function __construct(Usuario $usuario)
+    {
+        $this->usuario = $usuario;
+    }
     /**
      * Authenticate the user in API
      *
@@ -34,7 +41,8 @@ class AuthController extends Policy
 
     public function me()
     {
-        return response()->json(Auth::user());
+        $usuario = $this->usuario->with('perfil', 'aluno')->find(Auth::id());
+        return response()->json($usuario);
     }
 
     public function logout()

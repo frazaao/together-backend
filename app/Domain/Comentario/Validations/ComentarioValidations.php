@@ -24,7 +24,13 @@ class ComentarioValidations
         $this->usuario = $usuario;
     }
 
-    public static function verificaSeUsuarioEProfessor(Usuario $usuario)
+    /**
+     * verificaSeUsuarioEProfessor
+     *
+     * @param  Usuario $usuario
+     * @return bool
+     */
+    public static function verificaSeUsuarioEProfessor(Usuario $usuario): bool
     {
         if ($usuario->perfil->id === self::ID_PERFIL_PROFESSOR) {
             return true;

@@ -33,7 +33,7 @@ class PresencaController extends Policy
      */
     public function index()
     {
-        $this->temPermissao(RegrasEnum::PRESENCA_VISUALIZAR);
+        // $this->temPermissao(RegrasEnum::PRESENCA_VISUALIZAR);
 
         $presencas = $this->presenca->with("aluno:" . Aluno::ID . "," . Aluno::NOME)->get();
         return response()->json($presencas);
@@ -47,7 +47,7 @@ class PresencaController extends Policy
      */
     public function store(PresencaStoreRequest $request)
     {
-        $this->temPermissao(RegrasEnum::PRESENCA_CRIAR);
+        // $this->temPermissao(RegrasEnum::PRESENCA_CRIAR);
 
         $aluno = $this->aluno->find($request->id_aluno);
 
@@ -64,7 +64,7 @@ class PresencaController extends Policy
      */
     public function showByIdAluno($idAluno)
     {
-        $this->temPermissao(RegrasEnum::PRESENCA_VISUALIZAR);
+        // $this->temPermissao(RegrasEnum::PRESENCA_VISUALIZAR);
 
         $this->presencaValidations->validateIfAlunoExists($idAluno);
 

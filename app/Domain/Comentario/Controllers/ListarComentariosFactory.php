@@ -35,6 +35,11 @@ class ListarComentariosFactory extends ComentarioController
             ->comentarios;
     }
 
+    /**
+     * listarTodosComentarios
+     *
+     * @return $this
+     */
     public function listarTodosComentarios()
     {
         if ($this->possuiRegra(RegrasEnum::COMENTARIO_VISUALIZAR)) {
@@ -45,6 +50,11 @@ class ListarComentariosFactory extends ComentarioController
         return $this;
     }
 
+    /**
+     * listarComentariosPorProfessorLogado
+     *
+     * @return $this
+     */
     public function listarComentariosPorProfessorLogado()
     {
         if (ComentarioValidations::verificaSeUsuarioEProfessor(Auth::user())) {
@@ -56,6 +66,12 @@ class ListarComentariosFactory extends ComentarioController
         return $this;
     }
 
+
+    /**
+     * listarComentariosDoAlunoPorResponsavelLogado
+     *
+     * @return $this
+     */
     public function listarComentariosDoAlunoPorResponsavelLogado()
     {
         $idsAlunos = array_column(Auth::user()->aluno->toArray(), Aluno::ID);

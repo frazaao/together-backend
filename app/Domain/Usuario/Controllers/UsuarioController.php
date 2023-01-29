@@ -42,6 +42,7 @@ class UsuarioController extends Policy
             'turmaDisciplina.turma',
             'turmaDisciplina.disciplina'
         ])->get();
+
         return response()->json($usuarios);
     }
 
@@ -122,6 +123,8 @@ class UsuarioController extends Policy
      */
     public function destroy($id)
     {
+        $this->temPermissao(RegrasEnum::USUARIO_DELETAR);
+
         $usuario = $this->usuario->find($id);
         if (!$usuario) {
             throw new SistemaExeption(
