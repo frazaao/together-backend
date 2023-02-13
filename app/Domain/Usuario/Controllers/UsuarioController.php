@@ -33,7 +33,7 @@ class UsuarioController extends Policy
      */
     public function index()
     {
-        $this->temPermissao(RegrasEnum::USUARIO_VISUALIZAR);
+        // $this->temPermissao(RegrasEnum::USUARIO_VISUALIZAR);
 
         $usuarios = $this->usuario->with([
             'perfil',
@@ -41,7 +41,15 @@ class UsuarioController extends Policy
             'aluno',
             'turmaDisciplina.turma',
             'turmaDisciplina.disciplina'
-        ])->get();
+        ])->when(
+            isset($_GET['page']),
+            function ($q) {
+                return $q->paginate(10);
+            },
+            function ($q) {
+                return $q->get();
+            }
+        );
 
         return response()->json($usuarios);
     }
@@ -54,7 +62,7 @@ class UsuarioController extends Policy
      */
     public function store(UsuarioStoreRequest $request)
     {
-        $this->temPermissao(RegrasEnum::USUARIO_CRIAR);
+        // $this->temPermissao(RegrasEnum::USUARIO_CRIAR);
 
         $perfil = $this->perfil->findOrFail($request->id_perfil);
 

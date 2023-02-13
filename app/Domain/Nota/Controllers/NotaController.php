@@ -20,6 +20,21 @@ class NotaController extends Policy
         $this->aluno = $aluno;
     }
 
+    public function index()
+    {
+        $notas = $this->nota->with('turma', 'disciplina', 'aluno')->when(
+            isset($_GET['page']),
+            function ($q) {
+                return $q->paginate();
+            },
+            function ($q) {
+                return $q->get();
+            }
+        );
+
+        return response()->json($notas);
+    }
+
     public function listarNotasPorIdAluno(int $idAluno)
     {
         $notas = $this->aluno->with('nota', 'nota.disciplina')->find($idAluno);
@@ -27,7 +42,7 @@ class NotaController extends Policy
         return response()->json($notas);
     }
 
-    public function createNota(Request $request)
+    public function store(Request $request)
     {
         $nota = $this->nota->create($request->all());
 

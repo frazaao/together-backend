@@ -19,14 +19,14 @@ class Nota extends Model
     const ID_ALUNO = "id_aluno";
     const ID_DISCIPLINA = "id_disciplina";
     const ID_TURMA = "id_turma";
-    const SEMESTRE = "semestre";
+    const TRIMESTRE = "trimestre";
 
     protected $fillable = [
         Nota::VALOR,
         Nota::ID_ALUNO,
         Nota::ID_DISCIPLINA,
         Nota::ID_TURMA,
-        Nota::SEMESTRE,
+        Nota::TRIMESTRE,
     ];
 
     public function aluno()
@@ -49,7 +49,7 @@ class Nota extends Model
 
     public function turma()
     {
-        return $this->hasMany(
+        return $this->hasOne(
             Turma::class,
             Turma::ID,
             Nota::ID_TURMA

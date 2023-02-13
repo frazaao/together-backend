@@ -45,7 +45,15 @@ class ListarComentariosFactory extends ComentarioController
         if ($this->possuiRegra(RegrasEnum::COMENTARIO_VISUALIZAR)) {
             $this->comentarios = $this->comentario
                 ->with(['professor', 'professor.perfil', 'aluno'])
-                ->get();
+                ->when(
+                    isset($_GET['page']),
+                    function ($q) {
+                        return $q->paginate(10);
+                    },
+                    function ($q) {
+                        return $q->get();
+                    }
+                );
         }
         return $this;
     }
@@ -61,7 +69,15 @@ class ListarComentariosFactory extends ComentarioController
             $this->comentarios = $this->comentario
                 ->where(Comentario::ID_USUARIO_PROFESSOR, Auth::id())
                 ->with(['professor', 'professor.perfil', 'aluno'])
-                ->get();
+                ->when(
+                    isset($_GET['page']),
+                    function ($q) {
+                        return $q->paginate(10);
+                    },
+                    function ($q) {
+                        return $q->get();
+                    }
+                );
         }
         return $this;
     }
@@ -79,7 +95,15 @@ class ListarComentariosFactory extends ComentarioController
         $this->comentarios = $this->comentario
             ->where(Comentario::ID_ALUNO, $idsAlunos)
             ->with(['professor', 'professor.perfil', 'aluno'])
-            ->get();
+            ->when(
+                isset($_GET['page']),
+                function ($q) {
+                    return $q->paginate(10);
+                },
+                function ($q) {
+                    return $q->get();
+                }
+            );
 
         return $this;
     }

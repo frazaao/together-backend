@@ -9,9 +9,11 @@ use Domain\Aluno\Requests\AlunoStoreRequest;
 use Domain\Aluno\Requests\AlunoUpdateRequest;
 
 use Domain\Aluno\Models\Aluno;
+use Domain\Turma\Models\Turma;
 use Domain\Usuario\Models\Usuario;
 
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class AlunoController extends Policy
 {
@@ -33,7 +35,25 @@ class AlunoController extends Policy
     {
         // $this->temPermissao(RegrasEnum::ALUNO_VISUALIZAR);
 
-        $alunos = $this->aluno->with('turma.disciplina')->get();
+        $alunos = $this->aluno
+            ->with(['turma', 'turma.disciplina'])
+            ->when(
+                isset($_GET['turma']),
+                function ($q) {
+                    return $q->whereHas('turma', function ($query) {
+                        $query->where('turma.id', $_GET['turma']);
+                    });
+                }
+            )
+            ->when(
+                isset($_GET['page']),
+                function ($q) {
+                    return $q->paginate(10);
+                },
+                function ($q) {
+                    return $q->get();
+                }
+            );
         return response()->json($alunos);
     }
 
@@ -45,14 +65,25 @@ class AlunoController extends Policy
      */
     public function store(AlunoStoreRequest $request)
     {
-        $this->temPermissao(RegrasEnum::ALUNO_CRIAR);
+        // $this->temPermissao(RegrasEnum::ALUNO_CRIAR);
 
-        $usuario_responsavel = $this->usuario->find(
-            $request->id_usuario_responsavel
-        );
+        DB::beginTransaction();
+        try {
+            $usuario_responsavel = $this->usuario->find(
+                $request->id_usuario_responsavel
+            );
 
-        $aluno = $usuario_responsavel->aluno()->create($request->all());
-        return response()->json($aluno);
+            $aluno = $usuario_responsavel->aluno()->create($request->all());
+
+            $aluno->turma()->attach($request->id_turma);
+
+            DB::commit();
+
+            return response()->json($aluno);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw new SistemaExeption($e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
     /**
@@ -63,7 +94,7 @@ class AlunoController extends Policy
      */
     public function show($id)
     {
-        $this->temPermissao(RegrasEnum::ALUNO_VISUALIZAR);
+        // $this->temPermissao(RegrasEnum::ALUNO_VISUALIZAR);
 
         $aluno = $this->aluno->with('usuario_responsavel')->find($id);
         if (!$aluno) {
@@ -84,7 +115,7 @@ class AlunoController extends Policy
      */
     public function update(AlunoUpdateRequest $request, $id)
     {
-        $this->temPermissao(RegrasEnum::ALUNO_ATUALIZAR);
+        // $this->temPermissao(RegrasEnum::ALUNO_ATUALIZAR);
 
         $aluno = $this->aluno->find($id);
         if (!$aluno) {
@@ -94,6 +125,7 @@ class AlunoController extends Policy
             );
         }
         $aluno->update($request->all());
+        $aluno->save();
         return response()->json($aluno);
     }
 

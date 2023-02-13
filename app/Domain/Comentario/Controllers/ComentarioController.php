@@ -50,7 +50,7 @@ class ComentarioController extends Policy
      */
     public function store(Request $request)
     {
-        $this->temPermissao(RegrasEnum::COMENTARIO_CRIAR);
+        // $this->temPermissao(RegrasEnum::COMENTARIO_CRIAR);
 
         $usuarioProfessor = $this->usuario->find(Auth::id());
 

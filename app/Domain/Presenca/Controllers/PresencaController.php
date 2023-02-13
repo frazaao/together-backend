@@ -8,6 +8,7 @@ use Domain\Aluno\Models\Aluno;
 use Domain\Presenca\Models\Presenca;
 use Domain\Presenca\Requests\PresencaStoreRequest;
 use Domain\Presenca\Validations\PresencaValidations;
+use Illuminate\Http\Request;
 
 class PresencaController extends Policy
 {
@@ -35,7 +36,18 @@ class PresencaController extends Policy
     {
         // $this->temPermissao(RegrasEnum::PRESENCA_VISUALIZAR);
 
-        $presencas = $this->presenca->with("aluno:" . Aluno::ID . "," . Aluno::NOME)->get();
+        $presencas = $this
+        ->presenca
+        ->with("aluno:" . Aluno::ID . "," . Aluno::NOME)
+        ->when(
+            isset($_GET['page']),
+            function ($q) {
+                return $q->paginate(10);
+            },
+            function ($q) {
+                return $q->get();
+            }
+        );
         return response()->json($presencas);
     }
 
@@ -54,6 +66,16 @@ class PresencaController extends Policy
         $presenca = $aluno->presenca()->create($request->all());
 
         return response()->json($presenca);
+    }
+
+    public function storeMultiple(Request $request)
+    {
+        // dd($request);
+        foreach ($request->presencas as $presenca) {
+            $this->presenca->create($presenca);
+        }
+
+        return response()->json(['ok' => true]);
     }
 
     /**

@@ -5,7 +5,9 @@ use Domain\Auth\Controllers\AuthController;
 use Domain\Comentario\Controllers\ComentarioController;
 use Domain\Disciplina\Controllers\DisciplinaController;
 use Domain\Nota\Controllers\NotaController;
+use Domain\Perfil\Controllers\PerfilController;
 use Domain\Presenca\Controllers\PresencaController;
+use Domain\Relatorio\Controllers\RelatorioController;
 use Domain\Turma\Controllers\TurmaController;
 use Domain\Usuario\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +42,8 @@ Route::apiResource('/usuario', UsuarioController::class)->middleware(AUTH);
 Route::apiResource('/aluno', AlunoController::class)->middleware(AUTH);
 
 Route::apiResource('/presenca', PresencaController::class)->middleware(AUTH);
+Route::post('/presenca/multiplo', [PresencaController::class, "storeMultiple"])->middleware(AUTH);
+
 Route::get('/presenca/aluno/{idAluno}', [PresencaController::class, 'showByIdAluno'])->middleware(AUTH);
 
 Route::get('/comentario/aluno', [ComentarioController::class, 'listarComentariosDoAlunoPorResponsavelLogado'])->middleware(AUTH);
@@ -47,8 +51,14 @@ Route::get('/comentario/aluno/meu', [ComentarioController::class, 'listarComenta
 Route::apiResource('/comentario', ComentarioController::class)->middleware(AUTH);
 Route::get('/comentario/aluno/{idAluno}', [ComentarioController::class, 'listarComentariosPorIdAluno'])->middleware(AUTH);
 
-Route::get('/nota/aluno/{idAluno}', [NotaController::class, 'listarNotasPorIdAluno']);
+Route::get('/nota/aluno/{idAluno}', [NotaController::class, 'listarNotasPorIdAluno'])->middleware(AUTH);
 
-Route::apiResource('/turma', TurmaController::class);
+Route::apiResource('/nota', NotaController::class)->middleware(AUTH);
 
-Route::apiResource('/disciplina', DisciplinaController::class);
+Route::apiResource('/turma', TurmaController::class)->middleware(AUTH);
+
+Route::apiResource('/perfil', PerfilController::class)->middleware(AUTH);
+
+Route::apiResource('/disciplina', DisciplinaController::class)->middleware(AUTH);
+
+Route::post('/relatorio', RelatorioController::class);
